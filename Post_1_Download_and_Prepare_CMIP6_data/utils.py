@@ -379,8 +379,31 @@ def download_multiple_models_daily(start_year, end_year, models, variables, scen
 
 
 #####
-## 
+## aggregate daily data 
 
 
-
+def aggregate_daily_data(input_folder, output_file, target_year):
+    # List all the NetCDF files in the input folder
+    file_list = [os.path.join(input_folder, f) for f in os.listdir(input_folder) if f.endswith('.nc')]
+    
+    if not file_list:
+        print("No NetCDF files found in the input folder.")
+        return
+    
+    # Open all the datasets
+    datasets = [xr.open_dataset(file) for file in file_list]
+    
+    # Concatenate along the time dimension
+    combined = xr.concat(datasets, dim="time")
+    
+    # Compute the mean for each day of the year
+    daily_mean = combined.groupby("time.dayofyear").mean(dim="time")
+    
+    # Create a new time coordinate for a single year with 365 days
+    single_year = xr.cftime_range(start=f"{target_year}-01-01", end=f"{target_year}-12-31", calendar="noleap")
+    daily_mean = daily_mean.assign_coords(time=single_year)
+    
+    # Save the aggregated dataset to a NetCDF file
+    daily_mean.to_netcdf(output_file)
+    print(f"Aggregated data saved to {output_file}")
 

@@ -7,6 +7,7 @@ Created on Wed Jun  5 08:58:13 2024
 
 from utils import * 
 
+
 def log_message(message):
     print(message) 
     
@@ -89,7 +90,7 @@ def main():
             scenarios=scenarios,
             output_folder=output_folder,
             bounds=bounds,
-            num_workers=4,
+            num_workers=12,
             log_func=log_message,
             default_crs=default_crs,
             target_dataset_crs=target_dataset_crs
@@ -102,3 +103,18 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
+
+
+
+#############
+## 
+
+
+
+
+
+
+
+
+
+
